@@ -5,9 +5,17 @@ metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
     nginx.ingress.kubernetes.io/rewrite-target: /$1
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: 'true'
 spec:
+  tls:
+    - hosts:
+        - mentalwhetstone.com
+        - mk8s.mentalwhetstone.com
+      secretName: k8s-multi-com
   rules:
-    - http:
+    - host: mentalwhetstone.com
+      http:
         paths:
           - path: /?(.*)
             backend:
@@ -17,3 +25,14 @@ spec:
             backend:
               serviceName: server-cluster-ip-service
               servicePort: 5000
+    - host: mk8s.mentalwhetstone.com
+    http:
+      paths:
+        - path: /?(.*)
+          backend:
+            serviceName: client-cluster-ip-service
+            servicePort: 3000
+        - path: /api/?(.*)
+          backend:
+            serviceName: server-cluster-ip-service
+            servicePort: 5000

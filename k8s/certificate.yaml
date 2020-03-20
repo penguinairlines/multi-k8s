@@ -1,0 +1,20 @@
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: k8s-multi-com-tls
+spec:
+  secretName: k8s-multi-com
+  issuerRef:
+    name: letsencrypt-prod
+    kind: ClusterIssuer
+  commonName: mentalwhetstone.com
+  dnsNames:
+    - mentalwhetstone.com
+    - mk8s.mentalwhetstone.com
+  acme:
+    config:
+      - http01:
+          ingressClass: nginx
+        domains:
+          - mentalwhetstone.com
+          - mk8s.mentalwhetstone.com
